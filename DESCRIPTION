@@ -1,13 +1,17 @@
 Package: finalproject
-Title: project code and narrative
+Title: Exploring Public Health Disparities in the United States
 Version: 0.0.2
 Authors@R:
     person(given = "Liuxi",
            family = "Qi",
            role = c("aut", "cre"),
            email = "qiliuxi@gmail.com")
-Description: provide text on what your project emphasizes and 
-	accomplishes in three or more complete sentences.
+Description: This package explores public health disparities in the
+    United States using publicly available datasets. It examines
+    relationships between demographic, socioeconomic, and health
+    outcomes through descriptive statistics and visualizations.
+    The package provides reproducible analyses and reports
+    developed for the BST260 final project.
 Depends: R (>= 4.5.0)
 Suggests: knitr, testthat, rmarkdown, pkgdown
 License: Artistic-2.0
