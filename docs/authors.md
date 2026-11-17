@@ -2,21 +2,21 @@
 
 ## Authors
 
-- **yourfirstname lastname**. Author, maintainer.
-  [](https://orcid.org/0000-0002-1825-0097)
+- **Liuxi Qi**. Author, maintainer.
 
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/vjcitn/bst260project-template/NA/NA/NA/blob/HEAD/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/qiliuxi767-eng/finalproject/blob/HEAD/DESCRIPTION)
 
-lastname y (2026). *bst260project: project code and narrative*. R
-package version 0.0.2, <https://github.com/youreponame>.
+Qi L (2026). *finalproject: Exploring Public Health Disparities in the
+United States*. R package version 0.0.2,
+<https://github.com/qiliuxi767-eng/finalproject>.
 
-    @Manual{,
-      title = {bst260project: project code and narrative},
-      author = {yourfirstname lastname},
-      year = {2026},
-      note = {R package version 0.0.2},
-      url = {https://github.com/youreponame},
-    }
+@Manual{,\
+  title = {finalproject: Exploring Public Health Disparities in the United States},\
+  author = {Liuxi Qi},\
+  year = {2026},\
+  note = {R package version 0.0.2},\
+  url = {https://github.com/qiliuxi767-eng/finalproject},\
+}
