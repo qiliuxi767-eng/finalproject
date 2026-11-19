@@ -1,0 +1,200 @@
+---
+title: "BST260 Final Project Proposal"
+author: "Liuxi Qi"
+date: "2026-11-19"
+vignette: >
+  %\VignetteIndexEntry{BST260 Final Project Proposal}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+**Project title:** Maternal Age and Low Birth Weight, and Household Income and
+Adult Obesity: Two Analyses of U.S. Public Health Data
+
+## Overview
+
+This project addresses two public health questions with two different datasets
+encountered in the class:
+
+1. How is maternal age associated with low birth weight among U.S. live births
+   in 2025? (CDC/NCHS Natality data, processed with `nchsNatality`)
+2. How is household income associated with obesity among U.S. adults?
+   (NHANES, via the `NHANES` R package)
+
+Each question will be developed as a separate Quarto vignette in the
+`finalproject` R package. The package will be installable from GitHub and the
+pkgdown site will be published at `https://qiliuxi767-eng.github.io/finalproject`.
+
+## Vignette 1: Maternal Age and Low Birth Weight (U.S. Births, 2025)
+
+### Investigative objectives
+
+- **Primary:** Estimate the association between maternal age and the risk of
+  low birth weight (LBW) among singleton live births in the U.S. in 2025.
+- **Secondary:** Assess whether the association is non-linear (elevated risk
+  at both younger and older maternal ages) and how much it changes after
+  adjustment for maternal characteristics.
+- **Sensitivity:** Examine how the association changes when gestational age is
+  added to the model, recognizing that gestational age may lie on the causal
+  pathway between maternal age and birth weight.
+
+### Data provenance
+
+- **Source:** National Center for Health Statistics (NCHS), National Vital
+  Statistics System, Natality Public-Use File for 2025 births, derived from
+  U.S. birth certificates.
+- **Access and processing:** Raw fixed-width file downloaded from the NCHS
+  public-use data site; processed with the `nchsNatality` package
+  (github.com/vjcitn/nchsNatality) into Parquet format.
+- **Documentation:** The NCHS User Guide for the 2025 natality file will be
+  cited for record layout, variable definitions and missing-value codes.
+- **What will be recorded in the vignette:** download URL and date, file name
+  and size, number of records, `nchsNatality` version, and every filtering
+  step with the number of records removed (a flow table from all births to the
+  analytic sample).
+
+### Population and unit of analysis
+
+Unit of analysis: an individual live birth. Analytic sample: singleton live
+births in the 2025 file with non-missing birth weight and maternal age.
+Multiple births will be excluded because plurality strongly affects birth
+weight.
+
+### Variables of interest
+
+Variable names below follow the NCHS record layout and will be verified
+against the processed data.
+
+- **Exposure:** maternal age (`MAGER`), in categories (< 20, 20–24, 25–29
+  [reference], 30–34, 35–39, ≥ 40) and as a continuous variable with a
+  natural spline.
+- **Outcome:** LBW, defined as birth weight (`DBWT`) < 2,500 g (binary);
+  missing-value codes set to `NA`.
+- **Potential confounders:** maternal race/Hispanic origin, maternal
+  education, marital status, and parity (live-birth order), chosen a priori as
+  plausible common causes of maternal age and birth weight.
+- **Other covariates:** infant sex.
+- **Sensitivity covariate:** gestational age (weeks).
+
+### Planned analysis
+
+1. Process the raw file to Parquet with `nchsNatality`; verify record counts
+   against the NCHS documentation.
+2. Use DuckDB and SQL to select variables, recode missing values and run data
+   quality checks (implausible birth weights, missingness by variable).
+3. Descriptive statistics: distribution of maternal age; LBW prevalence
+   overall and by maternal age group; distribution of covariates by maternal
+   age group; missingness table.
+4. Visualization: LBW prevalence (with 95% CIs) by maternal age group and by
+   single year of age.
+5. Logistic regression models: (a) unadjusted, (b) adjusted for the
+   confounders above, (c) spline model for maternal age, (d) sensitivity model
+   adding gestational age. Report odds ratios with 95% CIs.
+6. Because the analytic sample has millions of records, statistical
+   significance alone will not be emphasized; interpretation will focus on
+   effect sizes and absolute differences in LBW prevalence.
+
+### Anticipated limitations
+
+Observational data, so associations are not causal; residual confounding by
+unmeasured factors (e.g., income, pre-pregnancy health); possible
+misclassification in birth-certificate fields; the 2025 file may be subject to
+later revision by NCHS; and adjustment for gestational age may introduce bias
+if it is a mediator.
+
+## Vignette 2: Household Income and Adult Obesity (NHANES)
+
+### Investigative objectives
+
+- **Primary:** Estimate the association between household income and obesity
+  among U.S. adults aged 20 and older.
+- **Secondary:** Assess whether the association differs by sex.
+- **Methodological:** Compare estimates from the `NHANES` teaching dataset
+  with survey-weighted estimates from `NHANESraw`.
+
+### Data provenance
+
+- **Source:** CDC National Center for Health Statistics, National Health and
+  Nutrition Examination Survey (NHANES), 2009–2010 and 2011–2012 cycles.
+- **Access:** the `NHANES` R package (CRAN), datasets `NHANES` and
+  `NHANESraw`; package version will be recorded.
+- **Important provenance note:** `NHANES` is a resample of 10,000
+  participants constructed so that it can be analyzed approximately as a
+  simple random sample of the U.S. population. `NHANESraw` contains the
+  original participants with survey weights (`WTMEC2YR`) and design variables
+  (`SDMVPSU`, `SDMVSTRA`). This distinction will be documented in the
+  vignette.
+- **Documentation:** package help pages and the NHANES documentation from
+  CDC for variable definitions; filtering steps and sample sizes will be
+  reported in a flow table.
+
+### Population and unit of analysis
+
+Unit of analysis: an individual participant. Analytic sample: adults aged
+20 and older with non-missing BMI and income; pregnant participants will be
+excluded if pregnancy status is available.
+
+### Variables of interest
+
+- **Exposure:** household income, using the income-to-poverty ratio
+  (`Poverty`) in categories (< 1.3, 1.3–3.5, ≥ 3.5) as the main measure, with
+  household income category (`HHIncome`) as an alternative.
+- **Outcome:** obesity, defined as BMI ≥ 30 kg/m² (binary), from measured
+  BMI (`BMI`).
+- **Potential confounders:** age, sex (`Gender`), and race/ethnicity
+  (`Race1`).
+- **Considered but not adjusted for in the main model:** education, physical
+  activity and diet-related variables, which may be on the pathway between
+  income and obesity; they may be used in secondary models.
+
+### Planned analysis
+
+1. Inspect variable definitions and missingness; construct the analytic
+   sample.
+2. Descriptive statistics: participant characteristics overall and by income
+   group (Table 1); obesity prevalence and BMI distribution by income group.
+3. Visualization: obesity prevalence by income group, stratified by sex;
+   BMI distribution by income group.
+4. Logistic regression models: unadjusted and adjusted for age, sex and
+   race/ethnicity; an income × sex interaction model for the secondary
+   objective. Report odds ratios with 95% CIs.
+5. Survey-weighted analysis with `NHANESraw` using the `survey` package
+   (weights, strata and PSUs; two-year weights divided by two when combining
+   cycles), and comparison with the unweighted `NHANES` results.
+
+### Anticipated limitations
+
+Cross-sectional design, so the direction of the association cannot be
+established (income may affect obesity and vice versa); residual confounding;
+BMI is an imperfect measure of adiposity; missing income data may not be
+missing at random; data from 2009–2012 may not reflect current patterns.
+
+## Structure of the final report in each vignette
+
+1. Introduction and investigative objectives
+2. Data provenance and analytic sample (flow table)
+3. Descriptive statistics and figures
+4. Statistical models and results
+5. Discussion: findings, limitations and next steps
+
+## Expected deliverables
+
+- A valid R package named `finalproject`, installable with
+  `devtools::install_github("qiliuxi767-eng/finalproject")`.
+- Two reproducible Quarto vignettes, one per dataset.
+- A publicly accessible pkgdown site on GitHub Pages.
+
+## Timeline
+
+- Week of Nov 23: process the natality file; build both analytic samples;
+  descriptive statistics.
+- Week of Nov 30: regression and survey-weighted models; figures.
+- Following week: write findings and limitations; final pkgdown build and
+  check that the package installs from GitHub.
+
+## Questions for the teaching team
+
+- For the natality analysis, is it acceptable to store only a processed,
+  reduced extract (selected variables) in the package, given the size of the
+  full file?
+- Is the survey-weighted comparison with `NHANESraw` an appropriate scope for
+  the NHANES vignette?
